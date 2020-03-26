@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import firebase from '../../firebase'
 import {
   Grid,
   Form,
@@ -11,10 +12,73 @@ import {
 import { Link } from "react-router-dom";
 
 class Register extends Component {
-  state = {};
+    state = {
+        username: '',
+        email: '',
+        password: '',
+        passwordConfirmation: '',
+        errors: []
+    };
+    
+    isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
+        return !username.length || !email.length || !password.length || !passwordConfirmation.length
+    }
 
-  handleChange = () => {};
-  render() {
+    isPasswordValid = ({ password, passwordConfirmation }) => {
+        if(password.length < 6 || passwordConfirmation.length < 6) {
+            return false
+        } else if(password !== passwordConfirmation) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    isFormValid = () => {
+        let errors = []
+        let error 
+
+        if(this.isFormEmpty(this.state)) {
+            error = {message: 'Fill in all fields'}
+            this.setState({ errors: errors.concat(error) })
+            return false
+        } else if(!this.isPasswordValid(this.state)) {
+            error = { message: 'Password is invalid' }
+            this.setState({ errors: errors.concat( error ) })
+            return false
+        } else {
+            return true
+        }
+    }
+
+    displayError = errors => errors.map( ( error, i ) => <p key={i}>{error.message}</p>)
+
+    handleChange = e => {
+        this.setState({ [e.target.name]: e.target.value })
+    }
+
+    handleSubmit = e => {
+        const { email, password } = this.state
+
+        if(this.isFormValid()) {
+            
+            e.preventDefault()
+            firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(createdUser => {
+                console.log(createdUser)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+
+    }
+    
+    render() {
+        const { username, email, password, passwordConfirmation, errors } = this.state
+        
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>
@@ -22,7 +86,7 @@ class Register extends Component {
             <Icon name="puzzle piece" color="orange" />
             Register for DevChat
           </Header>
-          <Form size="large">
+          <Form onSubmit={this.handleSubmit} size="large">
             <Segment stacked>
               <Form.Input
                 fluid
@@ -31,9 +95,9 @@ class Register extends Component {
                 iconPosition="left"
                 placeholder="Username"
                 onChange={this.handleChange}
+                value={username}
                 type="text"
               />
-
               <Form.Input
                 fluid
                 name="email"
@@ -41,9 +105,9 @@ class Register extends Component {
                 iconPosition="left"
                 placeholder="Email Address"
                 onChange={this.handleChange}
+                value={email}
                 type="email"
               />
-
               <Form.Input
                 fluid
                 name="password"
@@ -51,9 +115,9 @@ class Register extends Component {
                 iconPosition="left"
                 placeholder="Password"
                 onChange={this.handleChange}
+                value={password}
                 type="password"
               />
-
               <Form.Input
                 fluid
                 name="passwordConfirmation"
@@ -61,6 +125,7 @@ class Register extends Component {
                 iconPosition="left"
                 placeholder="Password Confirmation"
                 onChange={this.handleChange}
+                value={passwordConfirmation}
                 type="password"
               />
               <Button color="orange" fluid size="large">
@@ -68,6 +133,12 @@ class Register extends Component {
               </Button>
             </Segment>
           </Form>
+         {errors.length > 0 && (
+            <Message error>
+                <h3>Error</h3>
+                {this.displayError(errors)}
+            </Message>
+          )}
           <Message>
             Already a user? <Link to="/Login">Login</Link>
           </Message>
