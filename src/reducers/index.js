@@ -14,14 +14,31 @@ const user_reducer = (state = initialUserState, action) => {
         isLoading: false
       };
     case actionTypes.CLEAR_USER:
-      return { ...initialUserState, isLoading: false };
+      return { ...state, isLoading: false };
+    default:
+      return state;
+  }
+};
+
+const initialChannelState = {
+  currentChannel: null
+};
+
+const channel_reducers = (state = initialChannelState, action) => {
+  switch (action.type) {
+    case actionTypes.SET_CURRENT_CHANNEL:
+      return {
+        ...state,
+        currentChannel: action.payload.currentChannel
+      };
     default:
       return state;
   }
 };
 
 const rootReducer = combineReducers({
-  user: user_reducer
+  user: user_reducer,
+  channel: channel_reducers
 });
 
 export default rootReducer;
