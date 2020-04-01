@@ -52,14 +52,13 @@ class MessageForm extends Component {
   };
 
   render() {
-    console.log(this.props.channel && this.props.channel.id);
-    console.log(this.props.user.uid);
-    const { errors } = this.state;
+    const { errors, message, loading } = this.state;
     return (
       <Segment className="message--form">
         <Input
           fluid
           name="message"
+          value={message}
           onChange={this.handleChange}
           style={{ marginBottom: "0.7em" }}
           label={<Button icon={"add"} />}
@@ -74,6 +73,7 @@ class MessageForm extends Component {
         <Button.Group icon widths="2">
           <Button
             onClick={this.sendMessage}
+            disabled={loading}
             color="orange"
             content="Add Reply"
             labelPosition="left"

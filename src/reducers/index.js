@@ -24,7 +24,7 @@ const initialChannelState = {
   currentChannel: null
 };
 
-const channel_reducers = (state = initialChannelState, action) => {
+const channel_reducer = (state = initialChannelState, action) => {
   switch (action.type) {
     case actionTypes.SET_CURRENT_CHANNEL:
       return {
@@ -38,7 +38,7 @@ const channel_reducers = (state = initialChannelState, action) => {
 
 const rootReducer = combineReducers({
   user: user_reducer,
-  channel: channel_reducers
+  channel: channel_reducer
 });
 
 export default rootReducer;

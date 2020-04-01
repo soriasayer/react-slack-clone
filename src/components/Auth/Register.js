@@ -20,10 +20,10 @@ class Register extends Component {
     passwordConfirmation: "",
     errors: [],
     loading: false,
-    usersRef: firebase.database().ref("users")
+    usersRef: firebase.database().ref( "users" )
   };
 
-  isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
+  isFormEmpty = ( { username, email, password, passwordConfirmation } ) => {
     return (
       !username.length ||
       !email.length ||
@@ -32,12 +32,15 @@ class Register extends Component {
     );
   };
 
-  isPasswordValid = ({ password, passwordConfirmation }) => {
-    if (password.length < 6 || passwordConfirmation.length < 6) {
+  isPasswordValid = ( { password, passwordConfirmation } ) => {
+    if ( password.length < 6 || passwordConfirmation.length < 6 )
+    {
       return false;
-    } else if (password !== passwordConfirmation) {
+    } else if ( password !== passwordConfirmation )
+    {
       return false;
-    } else {
+    } else
+    {
       return true;
     }
   };
@@ -46,31 +49,34 @@ class Register extends Component {
     let errors = [];
     let error;
 
-    if (this.isFormEmpty(this.state)) {
+    if ( this.isFormEmpty( this.state ) )
+    {
       error = { message: "Fill in all fields" };
-      this.setState({ errors: errors.concat(error) });
+      this.setState( { errors: errors.concat( error ) } );
       return false;
-    } else if (!this.isPasswordValid(this.state)) {
+    } else if ( !this.isPasswordValid( this.state ) )
+    {
       error = { message: "Password is invalid" };
-      this.setState({ errors: errors.concat(error) });
+      this.setState( { errors: errors.concat( error ) } );
       return false;
-    } else {
+    } else
+    {
       return true;
     }
   };
 
   displayError = errors =>
-    errors.map((error, i) => <p key={i}>{error.message}</p>);
+    errors.map( ( error, i ) => <p key={i}>{error.message}</p> );
 
   handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState( { [e.target.name]: e.target.value } );
   };
 
   saveUser = createdUser => {
-    return this.state.usersRef.child(createdUser.user.uid).set({
+    return this.state.usersRef.child( createdUser.user.uid ).set( {
       name: createdUser.user.displayName,
       avatar: createdUser.user.photoURL
-    });
+    } );
   };
 
   handleSubmit = e => {
@@ -78,39 +84,40 @@ class Register extends Component {
 
     e.preventDefault();
 
-    if (this.isFormValid()) {
-      this.setState({ errors: [], loading: true });
+    if ( this.isFormValid() )
+    {
+      this.setState( { errors: [], loading: true } );
       firebase
         .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(createdUser => {
-          console.log(createdUser);
+        .createUserWithEmailAndPassword( email, password )
+        .then( createdUser => {
+          console.log( createdUser );
           createdUser.user
-            .updateProfile({
+            .updateProfile( {
               displayName: username,
-              photoURL: `http://gravatar.com/avatar/${md5(
+              photoURL: `http://gravatar.com/avatar/${ md5(
                 createdUser.user.email
-              )}?d=identicon`
-            })
-            .then(() => {
-              this.saveUser(createdUser).then(() => {
-                console.log("user saved");
-              });
-            })
-            .catch(err => {
-              console.log(err);
-              this.setState({ errors: errors.concat(err), loading: false });
-            });
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ errors: errors.concat(err), loading: false });
-        });
+              ) }?d=identicon`
+            } )
+            .then( () => {
+              this.saveUser( createdUser ).then( () => {
+                console.log( "user saved" );
+              } );
+            } )
+            .catch( err => {
+              console.log( err );
+              this.setState( { errors: errors.concat( err ), loading: false } );
+            } );
+        } )
+        .catch( err => {
+          console.log( err );
+          this.setState( { errors: errors.concat( err ), loading: false } );
+        } );
     }
   };
 
-  handleInputError = (errors, inputName) => {
-    return errors.some(error => error.message.toLowerCase().includes(inputName))
+  handleInputError = ( errors, inputName ) => {
+    return errors.some( error => error.message.toLowerCase().includes( inputName ) )
       ? "error"
       : "";
   };
@@ -143,7 +150,7 @@ class Register extends Component {
                 onChange={this.handleChange}
                 value={username}
                 type="text"
-                className={this.handleInputError(errors, "username")}
+                className={this.handleInputError( errors, "username" )}
               />
               <Form.Input
                 fluid
@@ -154,7 +161,7 @@ class Register extends Component {
                 onChange={this.handleChange}
                 value={email}
                 type="email"
-                className={this.handleInputError(errors, "email")}
+                className={this.handleInputError( errors, "email" )}
               />
               <Form.Input
                 fluid
@@ -165,7 +172,7 @@ class Register extends Component {
                 onChange={this.handleChange}
                 value={password}
                 type="password"
-                className={this.handleInputError(errors, "password")}
+                className={this.handleInputError( errors, "password" )}
               />
               <Form.Input
                 fluid
@@ -176,7 +183,7 @@ class Register extends Component {
                 onChange={this.handleChange}
                 value={passwordConfirmation}
                 type="password"
-                className={this.handleInputError(errors, "password")}
+                className={this.handleInputError( errors, "password" )}
               />
               <Button
                 disabled={loading}
@@ -192,7 +199,7 @@ class Register extends Component {
           {errors.length > 0 && (
             <Message error>
               <h3>Error</h3>
-              {this.displayError(errors)}
+              {this.displayError( errors )}
             </Message>
           )}
           <Message>
