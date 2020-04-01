@@ -13,7 +13,7 @@ class MessagesHeader extends Component {
           <Header.Subheader>2 Users</Header.Subheader>
         </Header>
         <Header floated="right">
-          <Input size="mini" icon="serchTerm" placeholder="Search Messages" />
+          <Input size="mini" icon="search" placeholder="Search Messages" />
         </Header>
       </Segment>
     );
